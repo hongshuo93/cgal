@@ -22,16 +22,19 @@ bool operator<(const vertex2D<T>& v1, const vertex2D<T>& v2)
 	{
 		return true;
 	}
-	if (v1.x < v2.x)
+	if ( abs( v1.y - v2.y)<0.000001)
 	{
-		return true;
+		if (v1.x < v2.x)
+		{
+			return true;
+		}
 	}
 	return false;
 }
 template <class T >
 bool ToLeftTest(const vertex2D<T>& v1, const vertex2D<T>& v2)
 {
-	return (v1.x*v2.y - v1.y*v2.x) > 0;
+	return (v1.x*v2.y - v1.y*v2.x) >= 0;
 }
 template <class T>
 void Sort(vertex2D<T> point,int begin,int end,vector<vertex2D<T>> &data)
@@ -45,13 +48,13 @@ void Sort(vertex2D<T> point,int begin,int end,vector<vertex2D<T>> &data)
 	auto current = data[begin];
 	while (left<right)
 	{
-		while (left < right &&  !ToLeftTest(current - point, data[right] - point))
+		while (left < right &&  ToLeftTest(current - point, data[right] - point))
 		{
 			right--;
 		}
 		data[left] = data[right];
 		left++;
-		while (left < right  &&  !ToLeftTest(current - point, data[left] - point))
+		while (left < right  &&  ToLeftTest( data[left] - point, current - point))
 		{
 			left++;
 		}
@@ -61,6 +64,15 @@ void Sort(vertex2D<T> point,int begin,int end,vector<vertex2D<T>> &data)
 	data[left] = current;
 	Sort<T>(point, begin, left, data);
 	Sort<T>(point, left + 1, end, data);
+}
+template <class T> 
+void log(const vector<vertex2D<T>>& input)
+{
+	int size = input.size();
+	for (int i = 0; i < size; i++)
+	{
+		cout << i << " " << input[i].x << " " << input[i].y << "\n";
+	}
 }
 template <class T>
 vector<vertex2D<T>> ConvexHull(vector<vertex2D<T>>& input)
@@ -84,10 +96,14 @@ vector<vertex2D<T>> ConvexHull(vector<vertex2D<T>>& input)
 	}
 	auto i = input[0];
 	Sort<T>(i, 1, inputSize, input);
+	
+	vector<vertex2D<T>> result;
+
 	stack<vertex2D<T>> visitStack;
 	visitStack.push(input[0]);
 	visitStack.push(input[1]);
-	for (int i = 2; i < inputSize; )
+	visitStack.push(input[2]);
+	for (int i = 3; i < inputSize; )
 	{
 		auto p1 = visitStack.top();
 		visitStack.pop();
@@ -106,16 +122,18 @@ vector<vertex2D<T>> ConvexHull(vector<vertex2D<T>>& input)
 			visitStack.push(p0);
 		}
 	}
-	vector<vertex2D<T>> result;
+
 	while (!visitStack.empty())
 	{
 		auto current = visitStack.top();
 		visitStack.pop();
 		result.push_back(current);
 	}
+	reverse(result.begin(), result.end());
 	return result; 
 
 }
+
 void qsort(int begin, int end, vector<int>& data)
 {
 	if (begin >= end)
@@ -150,15 +168,14 @@ int main()
 	vector<vertex2D<float>>  input;
 	for (int i = 0; i < 100; i++)
 	{
-		float x = rand() % 100000;
-		float y = rand() % 100000;
+		float x = rand() % 1280 - 1280/2;
+		float y = rand() % 760- 760/2;
 		input.push_back(vertex2D<float>(x, y));
 	}
 	auto result = ConvexHull(input);
-	for (int i = 0; i < result.size(); i++)
-	{
-		printf("%d = (%f, %f);\n", i, result[i].x, result[i].y);
-	}
+	cout << 100 << " " << result.size() << "\n";
+	log(input);
+	log(result);
 	system("pause");
 
 	return 0;
