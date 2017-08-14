@@ -34,7 +34,7 @@ struct vertex2D
 	{
 		T x2 = (this->x - v2.x)*(this->x - v2.x);
 		T y2 = (this->y - v2.y)*(this->y - v2.y);
-		return (x2 + y2) < 0.0001;
+		return (x2 + y2) < 0.0000001;
 	}
 };
 
@@ -42,7 +42,7 @@ struct vertex2D
 template <class T >
 bool ToLeftTest(const vertex2D<T>& v1, const vertex2D<T>& v2)
 {
-	return (v1.x*v2.y - v1.y*v2.x) > 0.0001;
+	return (v1.x*v2.y - v1.y*v2.x) > 0.0000001;
 }
 template <class T>
 void Sort(vertex2D<T> point, int begin, int end, vector<vertex2D<T>> &data)
@@ -75,11 +75,11 @@ void Sort(vertex2D<T> point, int begin, int end, vector<vertex2D<T>> &data)
 template <class T>
 bool IsInSameLine(vertex2D<T>& v1, vertex2D<T>& v2)
 {
-	if (abs(v1.x - v2.x) < 0.0001 || abs(v1.y - v2.y) < 0.0001)
+	if (abs(v1.x - v2.x) < 0.0000001 || abs(v1.y - v2.y) < 0.0000001)
 	{
 		return true;
 	}
-	if (abs((v1.x / v2.x) - (v1.y / v2.y)) < 0.0001)
+	if (abs((v1.x / v2.x) - (v1.y / v2.y)) < 0.00000001)
 	{
 		return true;
 	}

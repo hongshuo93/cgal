@@ -39,16 +39,16 @@ void qsort(int begin, int end, vector<int>& data)
 }
 int main()
 {
-	vector<vertex2D<float>>  input;
+	vector<vertex2D<double>>  input;
 	
 	for (int i = 0; i < INPUT_SIZE; i++)
 	{
 		
-		float x = (rand() % 1280)- 1280;
-		float y = (rand() % 760)- 760;
-		//x = x + 0.001*(rand() % 1000);
-		//y = y + 0.001*(rand() % 1000);
-		input.push_back(vertex2D<float>(x, y));
+		double x = (rand() % 1280)- 1280;
+		double y = (rand() % 760)- 760;
+		x = x + 0.00001*(rand() % 100000);
+		y = y + 0.00001*(rand() % 100000);
+		input.push_back(vertex2D<double>(x, y));
 	}
 	auto result = convexHull2(input);
 	cout << INPUT_SIZE << " " << result.size() << "\n";
