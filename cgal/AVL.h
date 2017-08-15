@@ -8,7 +8,7 @@ struct TreeNode {
 	T val;
 	TreeNode* left, *right;
 	int height;
-	TreeNode(const T& _val)val(_val), left(nullptr), right(nullptr),height(1) {}
+	TreeNode(const T& _val):val(_val), left(nullptr), right(nullptr),height(1) {}
 };
 template <typename T>
 class  AVL
@@ -20,11 +20,7 @@ public:
 	}
 	void insert(const T& data) 
 	{
-		if (root == nullptr)
-		{
-			root = new TreeNode<T>(data);
-			return;
-		}
+	  this->root = 	_insert(data, this->root);
 	}
 	
 private:
@@ -33,6 +29,8 @@ private:
 		auto newRoot = node->right;
 		node->right = newRoot->left;
 		newRoot->left = node;
+		node->height = max(GetHeight(node->left), GetHeight(node->right)) + 1;
+		newRoot->height = max(GetHeight(newRoot->left), GetHeight(newRoot->right)) + 1;
 		return newRoot;
 	}
 	TreeNode<T>* singleR(TreeNode<T>* node)
@@ -40,13 +38,20 @@ private:
 		auto newRoot = node->left;
 		node->left = newRoot->right;
 		newRoot->right = node;
+		node->height = max(GetHeight(node->left), GetHeight(node->right)) + 1;
+		newRoot->height = max(GetHeight(newRoot->left), GetHeight(newRoot->right)) + 1;
 		return newRoot;
 	}
 	TreeNode<T>* doubleRL(TreeNode<T>* node)
 	{
-		 
+		node->right = singleR(node->right);
+		return singleL(node);
 	}
-
+	TreeNode<T>* doubleLR(TreeNode<T>* node)
+	{
+		node->left = singleL(node->left);
+		return singleR(node);
+	}
 	TreeNode<T> *root;
 	TreeNode<T>* _insert(const T&data, TreeNode<T>* node)
 	{
@@ -73,7 +78,7 @@ private:
 				}
 				else
 				{
-
+					node = doubleRL(node);
 				}
 			}
 		}
@@ -85,14 +90,16 @@ private:
 			{
 				if (data < node->left->val)
 				{
-
+					node = singleR(node);
 				}
 				else
 				{
-
+					node = doubleLR(node);
 				}
 			}
 		}
+		node->height = max(GetHeight(node->left), GetHeight(node->right)) + 1;
+		return node;
 	}
 	int GetHeight(TreeNode<T> * node)
 	{
